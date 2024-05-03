@@ -8,6 +8,8 @@ async function addNote(req, res){
         await notes_db.create(note);
         res.status(201).json({message: 'Note added successfully'})
     } catch (error) {
+
+      console.log(error)
         res.status(409).json({message: error.message})
     }
 }
@@ -26,7 +28,9 @@ async function getNote(req, res){
 async function globalSearch(req, res) {
     try {
       const query = req.query.q; // Get the search query from the request query parameters
+      const userId = req.query.userId;
       const result = await notes_db.find({
+        user_id: userId,
         $or: [
           { title: { $regex: query, $options: "i" } }, // Case-insensitive matching for name
           { content: { $regex: query, $options: "i" } }, // Case-insensitive matching for description
